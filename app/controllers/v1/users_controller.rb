@@ -10,6 +10,7 @@ class V1::UsersController < V1::ApplicationController
   example <<-DATA
   REQUEST:
   {
+    "username": "Test"
     "email":"test@example.com",
     "password":"147896325",
     "password_confirmation":"147896325"
@@ -18,7 +19,7 @@ class V1::UsersController < V1::ApplicationController
   example <<-DATA
   RESPONSE
   {
-    "success": "User test2 created!"
+    "success": "User Test created!"
   }
   DATA
   example <<-DATA
@@ -27,6 +28,7 @@ class V1::UsersController < V1::ApplicationController
     "errors": [
       "Password can't be blank",
       "Password is too short (minimum is 8 characters)",
+      "Password and password confirmation does not match",
       "Email can't be blank",
       "Email is invalid",
       "Username can't be blank",
@@ -35,8 +37,7 @@ class V1::UsersController < V1::ApplicationController
   }
   DATA
   def create
-    #TODO: move to form object, add password confirmation validation
-    user = User.new(user_params)
+    user = V1::UserForm.new(user_params)
     if user.save
       render json: { success: "User #{user.username} created!" }, status: :created
     else
