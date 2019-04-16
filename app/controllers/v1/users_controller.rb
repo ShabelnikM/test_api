@@ -1,11 +1,5 @@
+# frozen_string_literal: true
 class V1::UsersController < V1::ApplicationController
-  before_action :authorize_request, only: %i[index]
-
-  #TODO: remove
-  def index
-    users = User.all
-    render json: users, status: :ok
-  end
 
   api :POST, 'v1/auth/sign_up', 'Sign up new User'
   error code: 422, desc: 'Invalid data for sign up.'

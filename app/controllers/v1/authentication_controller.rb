@@ -18,8 +18,7 @@ class V1::AuthenticationController < V1::ApplicationController
   RESPONSE:
   {
     "token": "example token",
-    "exp": "expiration date",
-    "username": "Username"
+    "exp": "expiration date"
   }
   DATA
   example <<-DATA
@@ -33,14 +32,29 @@ class V1::AuthenticationController < V1::ApplicationController
     if user&.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: user.id)
       time = Time.now + 24.hours.to_i
-      render json: { token: token, exp: time.strftime("%m-%d-%Y %H:%M"), username: user.username }, status: :ok
+      render json: { token: token, exp: time.strftime('%m-%d-%Y %H:%M') }, status: :ok
     else
       render json: { errors: ['Invalid login credentials. Please try again.'] }, status: :unauthorized
     end
   end
 
-  #TODO: add token to redis blacklist
+  api :DELETE, 'v1/auth/sign_out', 'Sign out'
+  error code: 401, desc: 'Auth token doesn`t provided'
+  description 'sign out, using current auth token.'
+  example <<-DATA
+  RESPONSE:
+  {
+    "success": "Signed out successfully"
+  }
+  DATA
+  example <<-DATA
+  ERRORS_RESPONSE:
+  {
+    "errors": ["Nil JSON web token"]
+  }
+  DATA
   def destroy
+    Rails.cache.write("tokens_blacklist/#{@header}", true, expires_in: 24.hours)
     render json: { success: 'Signed out successfully'}, status: :ok
   end
 
