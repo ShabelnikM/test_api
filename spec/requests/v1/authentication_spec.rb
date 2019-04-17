@@ -46,7 +46,7 @@ RSpec.describe 'V1::Authentication', type: :request do
       let(:token) { json_response[:token] }
       before { delete '/api/v1/auth/sign_out', headers: { authorization: token } }
 
-      it { expect(response).to have_http_status 200 }
+      it { expect(response).to have_http_status 204 }
     end
 
     context 'when authorization token does not provided' do

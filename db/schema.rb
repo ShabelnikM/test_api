@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_17_003826) do
+ActiveRecord::Schema.define(version: 2019_04_17_214446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,6 +25,17 @@ ActiveRecord::Schema.define(version: 2019_04_17_003826) do
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
+  create_table "tasks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.datetime "deadline"
+    t.integer "priority"
+    t.boolean "done", default: false
+    t.uuid "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_tasks_on_project_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "username"
     t.string "email"
@@ -36,4 +47,5 @@ ActiveRecord::Schema.define(version: 2019_04_17_003826) do
   end
 
   add_foreign_key "projects", "users"
+  add_foreign_key "tasks", "projects"
 end

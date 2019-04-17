@@ -4,6 +4,7 @@ class V1::ProjectsController < V1::ApplicationController
   before_action :set_project, only: %i[show update destroy]
 
   api :GET, 'v1/users/:user_id/projects', 'Show user projects. Authorization token required.'
+  error code: 401, desc: 'Invalid authorization token provided.'
   example <<-DATA
   RESPONSE
   {
@@ -48,11 +49,27 @@ class V1::ProjectsController < V1::ApplicationController
     }
   }
   DATA
+  example <<-DATA
+  401 ERROR RESPONSE:
+  {
+    "errors": [
+      {
+        "title": "Invalid authorization token",
+        "detail": "Invalid authorization token",
+        "source": {}
+      }
+    ],
+    "jsonapi": {
+      "version": "1.0"
+    }
+  }
+  DATA
   def index
     render jsonapi: @current_user.projects, class: ->(_) { V1::SerializableProject }, status: :ok
   end
 
   api :GET, 'v1/users/:user_id/projects/:id', 'Show project. Authorization token required.'
+  error code: 401, desc: 'Invalid authorization token provided.'
   example <<-DATA
   RESPONSE
   {
@@ -73,6 +90,21 @@ class V1::ProjectsController < V1::ApplicationController
         "self": "/api/v1/users/f09d9fed-dea1-4efb-811a-dd8692b8f5ca/projects/dab457d2-512c-41a5-8261-99c5d2967f31"
       }
     },
+    "jsonapi": {
+      "version": "1.0"
+    }
+  }
+  DATA
+  example <<-DATA
+  401 ERROR RESPONSE:
+  {
+    "errors": [
+      {
+        "title": "Invalid authorization token",
+        "detail": "Invalid authorization token",
+        "source": {}
+      }
+    ],
     "jsonapi": {
       "version": "1.0"
     }
@@ -120,7 +152,16 @@ class V1::ProjectsController < V1::ApplicationController
   example <<-DATA
   401 ERROR RESPONSE:
   {
-    "errors": ["Nil JSON web token"]
+    "errors": [
+      {
+        "title": "Invalid authorization token",
+        "detail": "Invalid authorization token",
+        "source": {}
+      }
+    ],
+    "jsonapi": {
+      "version": "1.0"
+    }
   }
   DATA
   example <<-DATA
@@ -184,7 +225,16 @@ class V1::ProjectsController < V1::ApplicationController
   example <<-DATA
   401 ERROR RESPONSE:
   {
-    "errors": ["Nil JSON web token"]
+    "errors": [
+      {
+        "title": "Invalid authorization token",
+        "detail": "Invalid authorization token",
+        "source": {}
+      }
+    ],
+    "jsonapi": {
+      "version": "1.0"
+    }
   }
   DATA
   def update
@@ -196,6 +246,22 @@ class V1::ProjectsController < V1::ApplicationController
   end
 
   api :DELETE, 'v1/users/:user_id/projects/:id', 'Delete project. Authorization token required.'
+  error code: 401, desc: 'Invalid authorization token provided.'
+  example <<-DATA
+  401 ERROR RESPONSE:
+  {
+    "errors": [
+      {
+        "title": "Invalid authorization token",
+        "detail": "Invalid authorization token",
+        "source": {}
+      }
+    ],
+    "jsonapi": {
+      "version": "1.0"
+    }
+  }
+  DATA
   def destroy
     if @project.destroy
       head :no_content, status: :ok

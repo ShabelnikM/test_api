@@ -1,7 +1,11 @@
 class ProjectPolicy < ApplicationPolicy
 
+  def index?
+    record.user == user
+  end
+
   def show?
-    true
+    record.user == user
   end
 
   def update?

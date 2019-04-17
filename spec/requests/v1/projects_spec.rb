@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'V1::User', type: :request do
+RSpec.describe 'V1::Project', type: :request do
   let(:user) { FactoryBot.create(:user) }
   before {
     post '/api/v1/auth/sign_in',

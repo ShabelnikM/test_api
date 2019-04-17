@@ -25,7 +25,16 @@ class V1::AuthenticationController < V1::ApplicationController
   example <<-DATA
   401 ERROR RESPONSE:
   {
-    "errors": ["Invalid login credentials. Please try again."]
+    "errors": [
+      {
+        "title": "Invalid login credentials",
+        "detail": "Invalid login credentials. Please try again",
+        "source": {}
+      }
+    ],
+    "jsonapi": {
+      "version": "1.0"
+    }
   }
   DATA
   def create
@@ -35,7 +44,16 @@ class V1::AuthenticationController < V1::ApplicationController
       time = Time.now + 24.hours.to_i
       render json: { token: token, exp: time.strftime('%m-%d-%Y %H:%M'), user_id: user.id }, status: :ok
     else
-      render json: { errors: ['Invalid login credentials. Please try again.'] }, status: :unauthorized
+      render json: {
+        errors: [
+          {
+            title: 'Invalid login credentials',
+            detail: 'Invalid login credentials. Please try again',
+            source: {}
+          }
+        ],
+        jsonapi: { version: '1.0' }
+      }, status: :unauthorized
     end
   end
 
@@ -43,20 +61,23 @@ class V1::AuthenticationController < V1::ApplicationController
   error code: 401, desc: 'Authorization token does not provided'
   description 'sign out, using current auth token.'
   example <<-DATA
-  RESPONSE:
-  {
-    "success": "Signed out successfully"
-  }
-  DATA
-  example <<-DATA
   401 ERROR RESPONSE:
   {
-    "errors": ["Nil JSON web token"]
+    "errors": [
+      {
+        "title": "Invalid authorization token",
+        "detail": "Invalid authorization token",
+        "source": {}
+      }
+    ],
+    "jsonapi": {
+      "version": "1.0"
+    }
   }
   DATA
   def destroy
     Rails.cache.write("tokens_blacklist/#{@header}", true, expires_in: 24.hours)
-    render json: { success: 'Signed out successfully'}, status: :ok
+    head :no_content, status: :ok
   end
 
   private
