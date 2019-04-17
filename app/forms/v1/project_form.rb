@@ -1,8 +1,5 @@
 # frozen_string_literal: true
-class V1::ProjectForm
-  include ActiveModel::Model
-  include Virtus.model
-
+class V1::ProjectForm <  V1::ApplicationForm
   attribute :name, String
   attribute :user_id, String
 
@@ -15,9 +12,5 @@ class V1::ProjectForm
     else
       false
     end
-  end
-
-  def object
-    @object
   end
 end

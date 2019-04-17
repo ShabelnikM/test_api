@@ -9,6 +9,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'jsonapi-rails', '~> 0.4.0'
 gem 'jwt'
 gem 'pg', '>= 0.18', '< 2.0'
+gem 'pundit', '~> 2.0.1'
 gem 'puma', '~> 3.11'
 gem 'rails', '~> 5.2.3'
 gem 'redis', '~> 4.1.0'

@@ -207,7 +207,7 @@ class V1::ProjectsController < V1::ApplicationController
   private
 
   def set_project
-    @project = Project.find(params[:id])
+    @project = authorize Project.find(params[:id])
   end
 
   def project_params

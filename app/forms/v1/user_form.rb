@@ -1,8 +1,5 @@
 # frozen_string_literal: true
-class V1::UserForm
-  include ActiveModel::Model
-  include Virtus.model
-
+class V1::UserForm < V1::ApplicationForm
   attribute :email, String
   attribute :username, String
   attribute :password, String
@@ -23,10 +20,6 @@ class V1::UserForm
     else
       false
     end
-  end
-
-  def object
-    @object
   end
 
   private

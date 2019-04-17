@@ -1,4 +1,8 @@
 class ApplicationController < ActionController::API
+  include Pundit
+  attr_reader :current_user
+
+  private
 
   def authorize_request
     header = request.headers['authorization']
