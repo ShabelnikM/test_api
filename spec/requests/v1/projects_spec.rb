@@ -13,6 +13,20 @@ RSpec.describe 'V1::User', type: :request do
   }
   let(:token) { json_response[:token] }
 
+  describe 'GET /api/v1/users/:user_id/projects' do
+    let!(:projects) { FactoryBot.create_list(:project, 3, user: user) }
+    before { get "/api/v1/users/#{user.id}/projects", headers: { authorization: token } }
+
+    it { expect(response).to have_http_status 200 }
+  end
+
+  describe 'GET /api/v1/users/:user_id/projects/:id' do
+    let!(:project) { FactoryBot.create(:project, user: user) }
+    before { get "/api/v1/users/#{user.id}/projects/#{project.id}", headers: { authorization: token } }
+
+    it { expect(response).to have_http_status 200 }
+  end
+
   describe 'POST /api/v1/users/:user_id/projects' do
     context 'when correct data provided' do
       before {
@@ -35,5 +49,26 @@ RSpec.describe 'V1::User', type: :request do
       before { post "/api/v1/users/#{user.id}/projects" }
       it { expect(response).to have_http_status 401 }
     end
+  end
+
+  describe 'PUT /api/v1/users/:user_id/projects/:id' do
+    let!(:project) { FactoryBot.create(:project, user: user) }
+    before {
+      put "/api/v1/users/#{user.id}/projects/#{project.id}",
+      headers: { authorization: token },
+      params: { name: Faker::Commerce.product_name }
+    }
+
+    it { expect(response).to have_http_status 200 }
+  end
+
+  describe 'DELETE /api/v1/users/:user_id/projects/:id' do
+    let!(:project) { FactoryBot.create(:project, user: user) }
+    before {
+      delete "/api/v1/users/#{user.id}/projects/#{project.id}",
+      headers: { authorization: token }
+    }
+
+    it { expect(response).to have_http_status 204 }
   end
 end
