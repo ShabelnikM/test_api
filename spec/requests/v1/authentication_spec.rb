@@ -35,7 +35,7 @@ RSpec.describe 'V1::Authentication', type: :request do
   end
 
   describe 'DELETE /api/v1/auth/sign_out' do
-    context 'when authentication token provided' do
+    context 'when authorization token provided' do
       before {
         post '/api/v1/auth/sign_in',
         params: {
@@ -44,12 +44,12 @@ RSpec.describe 'V1::Authentication', type: :request do
         }
       }
       let(:token) { json_response[:token] }
-      before { delete '/api/v1/auth/sign_out', headers: { Authorization: token } }
+      before { delete '/api/v1/auth/sign_out', headers: { authorization: token } }
 
       it { expect(response).to have_http_status 200 }
     end
 
-    context 'when authentication token does not provided' do
+    context 'when authorization token does not provided' do
       before { delete '/api/v1/auth/sign_out' }
       it { expect(response).to have_http_status 401 }
     end

@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
 
   def authorize_request
-    header = request.headers['Authorization']
+    header = request.headers['authorization']
     @header = header.split(' ').last if header
     begin
       raise ActiveRecord::RecordNotFound if Rails.cache.read("tokens_blacklist/#{@header}")

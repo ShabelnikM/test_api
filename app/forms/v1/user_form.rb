@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 class V1::UserForm
   include ActiveModel::Model
-  include ActiveModel::Validations
   include Virtus.model
 
   attribute :email, String
@@ -19,11 +18,15 @@ class V1::UserForm
 
   def save
     if valid?
-      User.create!(email: email, username: username, password: password)
+      @object = User.create!(email: email, username: username, password: password)
       true
     else
       false
     end
+  end
+
+  def object
+    @object
   end
 
   private

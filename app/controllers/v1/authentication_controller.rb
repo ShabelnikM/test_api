@@ -2,9 +2,9 @@
 class V1::AuthenticationController < V1::ApplicationController
   before_action :authorize_request, only: %i[destroy]
 
-  api :POST, 'v1/auth/sign_in', 'Sign in'
+  api :POST, 'v1/auth/sign_in', 'Sign in user.'
   error code: 401, desc: 'Empty email or password'
-  description 'sign in, return auth token. Add it to any request header as [Authorization]'
+  description 'sign in, return auth token. Add it to any request header as [authorization]'
   param :email, String, desc: 'email'
   param :password, String, desc: 'password'
   example <<-DATA
@@ -17,12 +17,13 @@ class V1::AuthenticationController < V1::ApplicationController
   example <<-DATA
   RESPONSE:
   {
-    "token": "example token",
-    "exp": "expiration date"
+    "token": "auth token",
+    "exp": "token`s expiration date",
+    "user_id": "user id"
   }
   DATA
   example <<-DATA
-  ERRORS_RESPONSE:
+  401 ERROR RESPONSE:
   {
     "errors": ["Invalid login credentials. Please try again."]
   }
@@ -32,14 +33,14 @@ class V1::AuthenticationController < V1::ApplicationController
     if user&.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: user.id)
       time = Time.now + 24.hours.to_i
-      render json: { token: token, exp: time.strftime('%m-%d-%Y %H:%M') }, status: :ok
+      render json: { token: token, exp: time.strftime('%m-%d-%Y %H:%M'), user_id: user.id }, status: :ok
     else
       render json: { errors: ['Invalid login credentials. Please try again.'] }, status: :unauthorized
     end
   end
 
-  api :DELETE, 'v1/auth/sign_out', 'Sign out'
-  error code: 401, desc: 'Auth token doesn`t provided'
+  api :DELETE, 'v1/auth/sign_out', 'Sign out user. Authorization token required.'
+  error code: 401, desc: 'Authorization token does not provided'
   description 'sign out, using current auth token.'
   example <<-DATA
   RESPONSE:
@@ -48,7 +49,7 @@ class V1::AuthenticationController < V1::ApplicationController
   }
   DATA
   example <<-DATA
-  ERRORS_RESPONSE:
+  401 ERROR RESPONSE:
   {
     "errors": ["Nil JSON web token"]
   }
