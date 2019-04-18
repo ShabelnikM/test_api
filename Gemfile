@@ -6,6 +6,7 @@ ruby '2.6.2'
 gem 'apipie-rails', '~> 0.5.15'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', '>= 1.1.0', require: false
+gem 'file_validators', '~> 2.3.0'
 gem 'jsonapi-rails', '~> 0.4.0'
 gem 'jwt'
 gem 'pg', '>= 0.18', '< 2.0'

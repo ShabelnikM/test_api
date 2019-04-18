@@ -8,7 +8,7 @@ class V1::UserForm < V1::ApplicationForm
   validates :email, presence: true
   validate :email_unique
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :username, presence: true, length: { minimum: 3, maximum: 50 }
+  validates :username, length: { minimum: 3, maximum: 50 }
   validate :username_unique
   validates :password, length: { minimum: 8 }
   validate :password_confirmed

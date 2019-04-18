@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       resources :projects, only: [] do
         resources :tasks
       end
+
+      resources :tasks, only: [] do
+        resources :comments, except: %i[show update]
+      end
     end
   end
 end

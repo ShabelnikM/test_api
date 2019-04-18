@@ -8,7 +8,7 @@ RSpec.describe 'V1::User', type: :request do
   describe 'POST /api/v1/auth/sign_up' do
     context 'when correct data provided' do
       before {
-        post '/api/v1/auth/sign_up',
+        post v1_auth_sign_up_url,
         params: {
           email: user.email,
           username: user.username,
@@ -20,7 +20,7 @@ RSpec.describe 'V1::User', type: :request do
     end
 
     context 'when incorrect data provided' do
-      before { post '/api/v1/auth/sign_up' }
+      before { post v1_auth_sign_up_url }
       it { expect(response).to have_http_status 422 }
     end
   end

@@ -6,4 +6,5 @@ Apipie.configure do |config|
   config.translate               = false
   config.api_controllers_matcher = "#{Rails.root}/app/controllers/**/*.rb"
   config.app_info['1.0']         = 'Test unit API for RubyGarage by Maksym Shabelnyk'
+  config.validate                = false
 end

@@ -8,7 +8,7 @@ RSpec.describe 'V1::Authentication', type: :request do
   describe 'POST /api/v1/auth/sign_in' do
     context 'when correct email and password provided' do
       before {
-        post '/api/v1/auth/sign_in',
+        post v1_auth_sign_in_url,
         params: {
           email: user.email,
           password: user.password
@@ -19,7 +19,7 @@ RSpec.describe 'V1::Authentication', type: :request do
 
     context 'when incorrect email and password provided' do
       before {
-        post '/api/v1/auth/sign_in',
+        post v1_auth_sign_in_url,
         params: {
           email: Faker::Internet.email,
           password: SecureRandom.urlsafe_base64(8)
@@ -29,7 +29,7 @@ RSpec.describe 'V1::Authentication', type: :request do
     end
 
     context 'when no email and password provided' do
-      before { post '/api/v1/auth/sign_in' }
+      before { post v1_auth_sign_in_url }
       it { expect(response).to have_http_status 401 }
     end
   end
@@ -37,20 +37,20 @@ RSpec.describe 'V1::Authentication', type: :request do
   describe 'DELETE /api/v1/auth/sign_out' do
     context 'when authorization token provided' do
       before {
-        post '/api/v1/auth/sign_in',
+        post v1_auth_sign_in_url,
         params: {
           email: user.email,
           password: user.password
         }
       }
       let(:token) { json_response[:token] }
-      before { delete '/api/v1/auth/sign_out', headers: { authorization: token } }
+      before { delete v1_auth_sign_out_url, headers: { authorization: token } }
 
       it { expect(response).to have_http_status 204 }
     end
 
     context 'when authorization token does not provided' do
-      before { delete '/api/v1/auth/sign_out' }
+      before { delete v1_auth_sign_out_url }
       it { expect(response).to have_http_status 401 }
     end
   end

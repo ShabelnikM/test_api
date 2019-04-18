@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'V1::Project', type: :request do
   let(:user) { FactoryBot.create(:user) }
   before {
-    post '/api/v1/auth/sign_in',
+    post v1_auth_sign_in_url,
     params: {
       email: user.email,
       password: user.password
@@ -15,14 +15,14 @@ RSpec.describe 'V1::Project', type: :request do
 
   describe 'GET /api/v1/users/:user_id/projects' do
     let!(:projects) { FactoryBot.create_list(:project, 3, user: user) }
-    before { get "/api/v1/users/#{user.id}/projects", headers: { authorization: token } }
+    before { get v1_user_projects_url(user.id), headers: { authorization: token } }
 
     it { expect(response).to have_http_status 200 }
   end
 
   describe 'GET /api/v1/users/:user_id/projects/:id' do
     let!(:project) { FactoryBot.create(:project, user: user) }
-    before { get "/api/v1/users/#{user.id}/projects/#{project.id}", headers: { authorization: token } }
+    before { get v1_user_project_url(user.id, project.id), headers: { authorization: token } }
 
     it { expect(response).to have_http_status 200 }
   end
@@ -30,7 +30,7 @@ RSpec.describe 'V1::Project', type: :request do
   describe 'POST /api/v1/users/:user_id/projects' do
     context 'when correct data provided' do
       before {
-        post "/api/v1/users/#{user.id}/projects",
+        post v1_user_projects_url(user.id),
         headers: { authorization: token },
         params: { name: Faker::Commerce.product_name }
       }
@@ -39,14 +39,14 @@ RSpec.describe 'V1::Project', type: :request do
 
     context 'when incorrect data provided' do
       before {
-        post "/api/v1/users/#{user.id}/projects",
+        post v1_user_projects_url(user.id),
         headers: { authorization: token }
       }
       it { expect(response).to have_http_status 422 }
     end
 
     context 'when authorization token missed' do
-      before { post "/api/v1/users/#{user.id}/projects" }
+      before { post v1_user_projects_url(user.id) }
       it { expect(response).to have_http_status 401 }
     end
   end
@@ -54,7 +54,7 @@ RSpec.describe 'V1::Project', type: :request do
   describe 'PUT /api/v1/users/:user_id/projects/:id' do
     let!(:project) { FactoryBot.create(:project, user: user) }
     before {
-      put "/api/v1/users/#{user.id}/projects/#{project.id}",
+      put v1_user_project_url(user.id, project.id),
       headers: { authorization: token },
       params: { name: Faker::Commerce.product_name }
     }
@@ -65,7 +65,7 @@ RSpec.describe 'V1::Project', type: :request do
   describe 'DELETE /api/v1/users/:user_id/projects/:id' do
     let!(:project) { FactoryBot.create(:project, user: user) }
     before {
-      delete "/api/v1/users/#{user.id}/projects/#{project.id}",
+      delete v1_user_project_url(user.id, project.id),
       headers: { authorization: token }
     }
 
