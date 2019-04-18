@@ -15,6 +15,9 @@ RSpec.describe 'V1::Authentication', type: :request do
         }
       }
       it { expect(response).to have_http_status 200 }
+      it { expect(json_response[:user_id]).to eq(user.id) }
+      it { expect(json_response[:token]).not_to be_nil }
+      it { expect(json_response[:exp]).not_to be_nil }
     end
 
     context 'when incorrect email and password provided' do
