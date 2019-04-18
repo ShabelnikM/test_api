@@ -41,19 +41,10 @@ class V1::AuthenticationController < V1::ApplicationController
     user = User.find_by_email(params[:email])
     if user&.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: user.id)
-      time = Time.now + 24.hours.to_i
-      render json: { token: token, exp: time.strftime('%m-%d-%Y %H:%M'), user_id: user.id }, status: :ok
+      exp = (Time.now + 24.hours).strftime('%m-%d-%Y %H:%M')
+      render json: { token: token, exp: exp, user_id: user.id }, status: :ok
     else
-      render json: {
-        errors: [
-          {
-            title: 'Invalid login credentials',
-            detail: 'Invalid login credentials. Please try again',
-            source: {}
-          }
-        ],
-        jsonapi: { version: '1.0' }
-      }, status: :unauthorized
+      error_responce('Invalid login credentials')
     end
   end
 

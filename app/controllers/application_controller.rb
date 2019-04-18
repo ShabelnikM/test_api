@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 class ApplicationController < ActionController::API
   include Pundit
   attr_reader :current_user
 
-  rescue_from Pundit::NotAuthorizedError, with: :request_not_authorized
+  rescue_from Pundit::NotAuthorizedError, with: :error_responce
 
   private
 
@@ -15,18 +16,18 @@ class ApplicationController < ActionController::API
       decoded = JsonWebToken.decode(@header)
       @current_user = User.find(decoded[:user_id])
     rescue ActiveRecord::RecordNotFound => e
-      request_not_authorized
+      error_responce
     rescue JWT::DecodeError
-      request_not_authorized
+      error_responce
     end
   end
 
-  def request_not_authorized
+  def error_responce(error = 'Invalid authorization token')
     render json: {
       errors: [
         {
-          title: 'Invalid authorization token',
-          detail: 'Invalid authorization token',
+          title: error,
+          detail: error,
           source: {}
         }
       ],
