@@ -37,6 +37,46 @@ RSpec.describe 'V1::Authentication', type: :request do
     end
   end
 
+  describe 'PUT /api/v1/auth/refresh' do
+    context 'when authorization token provided' do
+      before {
+        post v1_auth_sign_in_url,
+        params: {
+          email: user.email,
+          password: user.password
+        }
+      }
+      let(:token) { json_response[:token] }
+      before { put v1_auth_refresh_url, headers: { authorization: token } }
+
+      it { expect(response).to have_http_status 200 }
+      it { expect(json_response[:user_id]).to eq(user.id) }
+      it { expect(json_response[:token]).not_to be_nil }
+      it { expect(json_response[:exp]).not_to be_nil }
+    end
+
+    context 'when authorization token provided old token added to blacklist' do
+      before {
+        post v1_auth_sign_in_url,
+        params: {
+          email: user.email,
+          password: user.password
+        }
+      }
+      let(:token) { json_response[:token] }
+      before { put v1_auth_refresh_url, headers: { authorization: token } }
+      before { put v1_auth_refresh_url, headers: { authorization: token } }
+
+      it { expect(response).to have_http_status 401 }
+    end
+
+    context 'when authorization token does not provided' do
+      before { put v1_auth_refresh_url }
+
+      it { expect(response).to have_http_status 401 }
+    end
+  end
+
   describe 'DELETE /api/v1/auth/sign_out' do
     context 'when authorization token provided' do
       before {

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       post '/auth/sign_up', to: 'users#create'
       post '/auth/sign_in', to: 'authentication#create'
+      put '/auth/refresh', to: 'authentication#update'
       delete '/auth/sign_out', to: 'authentication#destroy'
 
       resources :users, only: %i[show] do
