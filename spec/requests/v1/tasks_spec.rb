@@ -19,6 +19,7 @@ RSpec.describe 'V1::Project', type: :request do
     before { get v1_project_tasks_url(project.id), headers: { authorization: token } }
 
     it { expect(response).to have_http_status 200 }
+    it { expect(json_response[:data].count).to eq(3) }
   end
 
   describe 'GET /api/v1/project/:project_id/tasks/:id' do

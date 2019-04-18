@@ -20,6 +20,7 @@ RSpec.describe 'V1::Comment', type: :request do
     before { get v1_task_comments_url(task.id), headers: { authorization: token } }
 
     it { expect(response).to have_http_status 200 }
+    it { expect(json_response[:data].count).to eq(3) }
   end
 
   describe 'POST /api/v1/tasks/:task_id/comments' do
